@@ -45,7 +45,7 @@ steps:
 # Step 6: Publish build artifacts
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: 'dist/your-angular-app'  # Replace with your Angular app's dist folder
+    PathtoPublish: 'dist/hello-angular'   # Replace with your Angular app's dist folder
     ArtifactName: 'drop'
     publishLocation: 'Container'
   displayName: 'Publish build artifacts'
