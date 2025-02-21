@@ -1,22 +1,59 @@
 # Node.js with Angular
-# Build a Node.js project that uses Angular.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+# Build, test, and deploy an Angular project using Azure Pipelines.
 
 trigger:
 - main
 
 pool:
-  name: Default
+  name: Default  # Replace with the name of your agent pool
+
+variables:
+  npm_config_cache: $(Pipeline.Workspace)/.npm  # Cache location for npm
 
 steps:
+# Step 1: Install Node.js
 - task: NodeTool@0
   inputs:
     versionSpec: '20.x'
   displayName: 'Install Node.js'
 
+# Step 2: Cache npm dependencies
+- task: Cache@2
+  inputs:
+    key: 'npm | "$(Agent.OS)" | package-lock.json'
+    restoreKeys: |
+      npm | "$(Agent.OS)"
+    path: $(npm_config_cache)
+  displayName: 'Cache npm dependencies'
+
+# Step 3: Install Angular CLI and project dependencies
 - script: |
     npm install -g @angular/cli
     npm install
+  displayName: 'npm install'
+
+# Step 4: Build the Angular project
+- script: |
     ng build --configuration production
-  displayName: 'npm install and build'
+  displayName: 'Build Angular project'
+
+# Step 5: Run unit tests
+- script: |
+    npm test
+  displayName: 'Run unit tests'
+
+# Step 6: Publish build artifacts
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'dist/your-angular-app'  # Replace with your Angular app's dist folder
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+  displayName: 'Publish build artifacts'
+
+# Step 7: Deploy to Azure Static Web Apps (optional)
+- task: AzureStaticWebApp@0
+  inputs:
+    app_location: 'dist/your-angular-app'  # Replace with your Angular app's dist folder
+    output_location: ''  # Leave empty if your build output is in the root of dist
+    azure_static_web_apps_api_token: $(azureStaticWebAppsToken)  # Add this secret variable in Azure DevOps
+  displayName: 'Deploy to Azure Static Web Apps'
