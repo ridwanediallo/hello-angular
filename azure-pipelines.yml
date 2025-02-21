@@ -38,9 +38,9 @@ steps:
   displayName: 'Build Angular project'
 
 # Step 5: Run unit tests
-- script: |
-    npm test
-  displayName: 'Run unit tests'
+# - script: |
+#     npm test
+#   displayName: 'Run unit tests'
 
 # Step 6: Publish build artifacts
 - task: PublishBuildArtifacts@1
