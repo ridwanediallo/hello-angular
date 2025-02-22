@@ -53,7 +53,7 @@ steps:
 # Step 7: Deploy to Azure Static Web Apps (optional)
 - task: AzureStaticWebApp@0
   inputs:
-    app_location: 'dist/your-angular-app'  # Replace with your Angular app's dist folder
+    app_location: 'dist/hello-angular'  # Replace with your Angular app's dist folder
     output_location: ''  # Leave empty if your build output is in the root of dist
     azure_static_web_apps_api_token: $(azureStaticWebAppsToken)  # Add this secret variable in Azure DevOps
   displayName: 'Deploy to Azure Static Web Apps'
