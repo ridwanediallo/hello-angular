@@ -60,8 +60,10 @@ steps:
 
 # Step 9: Deploy to Your Own Server (SCP)
 - script: |
-    echo "$(sshPrivateKey)" > id_rsa
+    echo "$SSH_PRIVATE_KEY" > id_rsa
     chmod 600 id_rsa
     scp -r -i id_rsa $(Build.ArtifactStagingDirectory)/drop/* adiallo@10.221.6.18:/home/adiallo/test_deploy
     rm -f id_rsa
   displayName: 'Deploy to Server (SCP)'
+  env:
+    SSH_PRIVATE_KEY: $(SSH_PRIVATE_KEY)
