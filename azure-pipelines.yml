@@ -23,7 +23,7 @@ steps:
     path: $(npm_config_cache)
   displayName: 'Cache npm dependencies'
 
-# Step 3: Install Angular CLI and project dependencies
+# Step 3: Install Angular CLI and dependencies
 - script: |
     npm install -g @angular/cli
     npm install
@@ -31,36 +31,37 @@ steps:
 
 # Step 4: Build the Angular project
 - script: |
-    ng build --configuration production
+    ng build --configuration=production --output-path=dist/hello-angular
   displayName: 'Build Angular project'
 
-# Step 5: Debugging - List Dist Folder
+# Step 5: Verify if dist folder exists
 - script: |
     ls -R dist
-  displayName: 'List Dist Folder'
+  displayName: 'Verify dist output'
 
-# Step 6: Debugging - List Dist/Hello-Angular Folder
+# Step 6: Copy build artifacts to the correct path
 - script: |
-    ls -R dist/hello-angular
-  displayName: 'List Dist/Hello-Angular Folder'
+    mkdir -p $(Build.ArtifactStagingDirectory)/drop
+    cp -r dist/hello-angular/* $(Build.ArtifactStagingDirectory)/drop/
+  displayName: 'Copy build artifacts'
 
 # Step 7: Publish build artifacts
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: 'dist/hello-angular'   # Must match the outputPath in angular.json
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop'
     ArtifactName: 'drop'
     publishLocation: 'Container'
   displayName: 'Publish build artifacts'
 
-# Step 8: Debugging - List Published Artifacts
+# Step 8: List Published Artifacts
 - script: |
-    ls -R $(Pipeline.Workspace)/drop
+    ls -R $(Build.ArtifactStagingDirectory)/drop
   displayName: 'List Published Artifacts'
 
 # Step 9: Deploy to Your Own Server (SCP)
 - script: |
-    echo "$(sshPrivateKey)" > id_rsa  # Write the SSH private key to a file
-    chmod 600 id_rsa  # Set the correct permissions for the private key
-    scp -r -i id_rsa $(Pipeline.Workspace)/drop/dist/hello-angular/* adiallo@10.221.6.18:/home/adiallo/test_deploy
-    rm -f id_rsa  # Clean up the private key file
+    echo "$(sshPrivateKey)" > id_rsa
+    chmod 600 id_rsa
+    scp -r -i id_rsa $(Build.ArtifactStagingDirectory)/drop/* adiallo@10.221.6.18:/home/adiallo/test_deploy
+    rm -f id_rsa
   displayName: 'Deploy to Server (SCP)'
