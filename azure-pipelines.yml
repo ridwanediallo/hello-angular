@@ -51,9 +51,9 @@ steps:
   displayName: 'Publish build artifacts'
 
 # Step 7: Deploy to Azure Static Web Apps (optional)
-- task: AzureStaticWebApp@0
-  inputs:
-    app_location: 'dist/hello-angular'  # Replace with your Angular app's dist folder
-    output_location: ''  # Leave empty if your build output is in the root of dist
-    azure_static_web_apps_api_token: $(azureStaticWebAppsToken)  # Add this secret variable in Azure DevOps
-  displayName: 'Deploy to Azure Static Web Apps'
+- script: |
+    echo "$(sshPrivateKey)" > id_rsa  # Write the SSH private key to a file
+    chmod 600 id_rsa  # Set the correct permissions for the private key
+    scp -r -i id_rsa $(Pipeline.Workspace)/drop/dist/hello-angular/* adiallo@10.221.6.18:/home/adiallo/test_deploy
+    rm -f id_rsa  # Clean up the private key file
+  displayName: 'Deploy to Server (SCP)'
