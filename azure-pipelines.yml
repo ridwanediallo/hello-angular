@@ -39,20 +39,25 @@ steps:
     ls -R dist
   displayName: 'List Dist Folder'
 
-# Step 6: Publish build artifacts
+# Step 6: Debugging - List Dist/Hello-Angular Folder
+- script: |
+    ls -R dist/hello-angular
+  displayName: 'List Dist/Hello-Angular Folder'
+
+# Step 7: Publish build artifacts
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: 'dist/hello-angular'   # Replace with your Angular app's dist folder
+    PathtoPublish: 'dist/hello-angular'   # Must match the outputPath in angular.json
     ArtifactName: 'drop'
     publishLocation: 'Container'
   displayName: 'Publish build artifacts'
 
-# Step 7: Debugging - List Published Artifacts
+# Step 8: Debugging - List Published Artifacts
 - script: |
     ls -R $(Pipeline.Workspace)/drop
   displayName: 'List Published Artifacts'
 
-# Step 8: Deploy to Your Own Server (SCP)
+# Step 9: Deploy to Your Own Server (SCP)
 - script: |
     echo "$(sshPrivateKey)" > id_rsa  # Write the SSH private key to a file
     chmod 600 id_rsa  # Set the correct permissions for the private key
