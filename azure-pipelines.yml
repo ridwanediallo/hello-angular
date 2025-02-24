@@ -37,7 +37,7 @@ steps:
     ng build --configuration production
   displayName: 'Build Angular project'
 
-# Step 5: Run unit tests
+# Step 5: Run unit tests (optional)
 # - script: |
 #     npm test
 #   displayName: 'Run unit tests'
@@ -50,7 +50,7 @@ steps:
     publishLocation: 'Container'
   displayName: 'Publish build artifacts'
 
-# Step 7: Deploy to Azure Static Web Apps (optional)
+# Step 7: Deploy to Your Own Server (SCP)
 - script: |
     echo "$(sshPrivateKey)" > id_rsa  # Write the SSH private key to a file
     chmod 600 id_rsa  # Set the correct permissions for the private key
@@ -58,6 +58,7 @@ steps:
     rm -f id_rsa  # Clean up the private key file
   displayName: 'Deploy to Server (SCP)'
 
-  - script: |
+# Step 8: Debugging - List Build Artifacts
+- script: |
     ls -R $(Pipeline.Workspace)/drop/dist/hello-angular
   displayName: 'List Build Artifacts'
