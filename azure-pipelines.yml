@@ -57,3 +57,7 @@ steps:
     scp -r -i id_rsa $(Pipeline.Workspace)/drop/dist/hello-angular/* adiallo@10.221.6.18:/home/adiallo/test_deploy
     rm -f id_rsa  # Clean up the private key file
   displayName: 'Deploy to Server (SCP)'
+
+  - script: |
+    ls -R $(Pipeline.Workspace)/drop/dist/hello-angular
+  displayName: 'List Build Artifacts'
