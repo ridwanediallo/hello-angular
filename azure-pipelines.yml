@@ -1,14 +1,11 @@
-# Node.js with Angular
-# Build, test, and deploy an Angular project using Azure Pipelines.
-
 trigger:
 - main
 
 pool:
-  name: Default  # Replace with the name of your agent pool
+  name: Default
 
 variables:
-  npm_config_cache: $(Pipeline.Workspace)/.npm  # Cache location for npm
+  npm_config_cache: $(Pipeline.Workspace)/.npm
 
 steps:
 # Step 1: Install Node.js
@@ -37,10 +34,10 @@ steps:
     ng build --configuration production
   displayName: 'Build Angular project'
 
-# Step 5: Run unit tests (optional)
-# - script: |
-#     npm test
-#   displayName: 'Run unit tests'
+# Step 5: Debugging - List Dist Folder
+- script: |
+    ls -R dist
+  displayName: 'List Dist Folder'
 
 # Step 6: Publish build artifacts
 - task: PublishBuildArtifacts@1
@@ -50,15 +47,15 @@ steps:
     publishLocation: 'Container'
   displayName: 'Publish build artifacts'
 
-# Step 7: Deploy to Your Own Server (SCP)
+# Step 7: Debugging - List Published Artifacts
+- script: |
+    ls -R $(Pipeline.Workspace)/drop
+  displayName: 'List Published Artifacts'
+
+# Step 8: Deploy to Your Own Server (SCP)
 - script: |
     echo "$(sshPrivateKey)" > id_rsa  # Write the SSH private key to a file
     chmod 600 id_rsa  # Set the correct permissions for the private key
     scp -r -i id_rsa $(Pipeline.Workspace)/drop/dist/hello-angular/* adiallo@10.221.6.18:/home/adiallo/test_deploy
     rm -f id_rsa  # Clean up the private key file
   displayName: 'Deploy to Server (SCP)'
-
-# Step 8: Debugging - List Build Artifacts
-- script: |
-    ls -R $(Pipeline.Workspace)/drop/dist/hello-angular
-  displayName: 'List Build Artifacts'
