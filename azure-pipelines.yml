@@ -65,5 +65,7 @@ steps:
     sourceFolder: '$(Build.ArtifactStagingDirectory)/drop'
     contents: '**'  # All files inside drop folder
     targetFolder: '/home/adiallo/test_deploy'  # Your server's deployment directory
-    cleanTargetFolder: false  # Set to true if you want to remove existing files before deploying
+    cleanTargetFolder: true  # Set to true to remove existing files before deploying
+    failOnEmptySource: true  # Fail if the source folder is empty
+    readyTimeout: '20000'  # Timeout for SSH connection (in milliseconds)
   displayName: 'Deploy to Server (Azure DevOps SSH)'
