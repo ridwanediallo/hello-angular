@@ -58,12 +58,12 @@ steps:
     ls -R $(Build.ArtifactStagingDirectory)/drop
   displayName: 'List Published Artifacts'
 
-# Step 9: Deploy to Your Own Server (SCP)
-- script: |
-    echo "$SSH_PRIVATE_KEY" > id_rsa
-    chmod 600 id_rsa
-    scp -r -i id_rsa $(Build.ArtifactStagingDirectory)/drop/* adiallo@10.221.6.18:/home/adiallo/test_deploy
-    rm -f id_rsa
-  displayName: 'Deploy to Server (SCP)'
-  env:
-    SSH_PRIVATE_KEY: $(SSH_PRIVATE_KEY)
+# Step 9: Deploy to Your Own Server via Azure DevOps SSH Service Connection
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'MyServerConnection'  # Use the Azure DevOps Service Connection name
+    sourceFolder: '$(Build.ArtifactStagingDirectory)/drop'
+    contents: '**'  # All files inside drop folder
+    targetFolder: '/home/adiallo/test_deploy'  # Your server's deployment directory
+    cleanTargetFolder: false  # Set to true if you want to remove existing files before deploying
+  displayName: 'Deploy to Server (Azure DevOps SSH)'
