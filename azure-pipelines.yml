@@ -63,4 +63,4 @@ steps:
   inputs:
     SourceFolder: '$(Build.ArtifactStagingDirectory)'
     Contents: '**'
-    TargetFolder: '/home/adiallo/deploy'
+    TargetFolder: '/home/adiallo/test_deploy'
