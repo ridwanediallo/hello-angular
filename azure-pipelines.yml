@@ -9,9 +9,9 @@ variables:
 
 steps:
 # Step 1: Install Node.js
-- task: NodeTool@0
+- task: UseNode@1
   inputs:
-    versionSpec: '16.x'
+    version: '18.x'  # Use Node.js 18 or higher
   displayName: 'Install Node.js'
 
 # Step 2: Cache npm dependencies
@@ -65,5 +65,7 @@ steps:
     sourceFolder: '$(Build.ArtifactStagingDirectory)/drop'
     contents: '**'  # All files inside drop folder
     targetFolder: '/home/adiallo/test_deploy'  # Your server's deployment directory
-    cleanTargetFolder: false  # Set to true if you want to remove existing files before deploying
+    cleanTargetFolder: true  # Set to true to remove existing files before deploying
+    failOnEmptySource: true  # Fail if the source folder is empty
+    readyTimeout: '20000'  # Timeout for SSH connection (in milliseconds)
   displayName: 'Deploy to Server (Azure DevOps SSH)'
