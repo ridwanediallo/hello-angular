@@ -59,13 +59,8 @@ steps:
   displayName: 'List Published Artifacts'
 
 # Step 9: Deploy to Your Own Server via Azure DevOps SSH Service Connection
-- task: CopyFilesOverSSH@0
+- task: CopyFiles@2
   inputs:
-    sshEndpoint: 'MyServerConnection'  # Use the Azure DevOps Service Connection name
-    sourceFolder: '$(Build.ArtifactStagingDirectory)/drop'
-    contents: '**'  # All files inside drop folder
-    targetFolder: '/home/adiallo/test_deploy'  # Your server's deployment directory
-    cleanTargetFolder: true  # Set to true to remove existing files before deploying
-    failOnEmptySource: true  # Fail if the source folder is empty
-    readyTimeout: '20000'  # Timeout for SSH connection (in milliseconds)
-  displayName: 'Deploy to Server (Azure DevOps SSH)'
+    SourceFolder: '$(Build.ArtifactStagingDirectory)'
+    Contents: '**'
+    TargetFolder: '/home/rdiallo/deploy_test'
